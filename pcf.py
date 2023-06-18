@@ -3,6 +3,15 @@ import board
 from adafruit_pcf8575 import PCF8575
 from adafruit_tca9548a import TCA9548A
 
+import logging
+from colorama import init, Fore, Style
+
+# 로깅 설정
+init()
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.addLevelName(logging.INFO, f"{Fore.GREEN}{logging.getLevelName(logging.INFO)}{Style.RESET_ALL}")
+logging.addLevelName(logging.WARNING, f"{Fore.RED}{logging.getLevelName(logging.INFO)}{Style.RESET_ALL}")
+
 # I2C bus 초기화
 i2c = board.I2C()
 
@@ -64,9 +73,8 @@ def common_signal():
         for pin in Gled_pin + Rled_pin:
             led = device.get_pin(pin)
             # led.switch_to_output(value=True)
-
-
-    print('first pattern')
+    
+    logging.info('First pattern') 
     first = {
         'one': ([7, 3], [1, 2, 3, 5, 6, 7]),
         'two': ([6, 2], [0, 2, 3, 4, 6, 7]),
@@ -91,7 +99,7 @@ def common_signal():
         time.sleep(0)
 
 
-    print('second pattern')
+    logging.info('Second pattern') 
     second = {
         'one': ([6, 2], [0, 2, 3, 4, 6, 7]),
         'two': ([4, 0], [0, 1, 2, 4, 5, 6]),
@@ -117,7 +125,7 @@ def common_signal():
         time.sleep(0)
 
 
-    print('third pattern')
+    logging.info('Third pattern') 
     states = {
         'one': ([4, 0], [0, 1, 2, 4, 5, 6]),
         'two': ([1, 5], [0, 1, 3, 4, 5, 7]),
@@ -142,7 +150,7 @@ def common_signal():
         time.sleep(0)
 
 
-    print('fourth pattern')
+    logging.info('Fourth pattern')
     fourth = {
         'one': ([1, 5], [0, 1, 3, 4, 5, 7]),
         'two': ([7, 3], [1, 2, 3, 5, 6, 7]),

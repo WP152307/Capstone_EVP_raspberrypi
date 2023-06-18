@@ -7,7 +7,7 @@ from adafruit_tca9548a import TCA9548A
 i2c = board.I2C()
 
 # TCA9548A 각각에 연결된 PCF8575 객체를 생성
-tca_addresses = [0x70, 0x71, 0x72, 0x73,0x74]
+tca_addresses = [0x70, 0x71, 0x72, 0x73, 0x74]
 
 one_tca = TCA9548A(i2c, tca_addresses[0])
 two_tca = TCA9548A(i2c, tca_addresses[1])
@@ -40,7 +40,9 @@ for i, device in enumerate(devices):
 
     for pin in Gled_pin + Rled_pin:
         led = device.get_pin(pin)
-def common_signal() :
+
+
+def common_signal():
     # Green, red pin
     global Gled_pin
     global Rled_pin
@@ -61,124 +63,105 @@ def common_signal() :
 
         for pin in Gled_pin + Rled_pin:
             led = device.get_pin(pin)
-            #led.switch_to_output(value=True)
+            # led.switch_to_output(value=True)
 
-    #first pattern
-    # 7, 6 green  10,11,12,13,14,15 red
 
     print('first pattern')
-    
-    for name in ['one', 'two', 'three', 'four', 'five']:
-        Gled[name][7].value = True
-        Gled[name][6].value = True
+    first = {
+        'one': ([7, 3], [1, 2, 3, 5, 6, 7]),
+        'two': ([6, 2], [0, 2, 3, 4, 6, 7]),
+        'three': ([4, 1], [0, 1, 2, 4, 5]),
+        'four': ([7, 5, 1], [1, 3, 4, 5, 7]),
+        'five': ([6, 0], [0, 2, 3, 4, 5, 6])
+    }
 
-    for name in ['one', 'two', 'three', 'four', 'five']:
-        for i in range(2, 8):
-            Rled[name][i].value = True
+    for pcf, leds in first.items():
+        for led in leds[0]:
+            Gled[pcf][led].value = True
+        for led in leds[1]:
+            Rled[pcf][led].value = True
 
-    time.sleep(2)
+        time.sleep(2)
 
-    for name in ['one', 'two', 'three', 'four', 'five']:
-        Gled[name][7].value = False
-        Gled[name][6].value = False
+        for led in leds[0]:
+            Gled[pcf][led].value = False
+        for led in leds[1]:
+            Rled[pcf][led].value = False
 
-        for i in range(2, 8):
-            Rled[name][i].value = False
+        time.sleep(0)
 
-    time.sleep(0)
 
-    #second pattern
-    # 5, 4 green 8,9,12,13,14,15 red
-    
     print('second pattern')
-    
-    for name in ['one', 'two', 'three', 'four', 'five']:
-        Gled[name][5].value = True
-        Gled[name][4].value = True
+    second = {
+        'one': ([6, 2], [0, 2, 3, 4, 6, 7]),
+        'two': ([4, 0], [0, 1, 2, 4, 5, 6]),
+        'three': ([5, 3], [0, 1, 3, 5, 6]),
+        'four': ([6, 3, 0], [0, 2, 3, 5, 6]),
+        'five': ([5, 3], [0, 1, 3, 5, 6, 7])
+    }
 
-    for name in ['one', 'two', 'three', 'four', 'five']:
-        Rled[name][0].value = True
-        Rled[name][1].value = True
-        Rled[name][4].value = True
-        Rled[name][5].value = True
+    for pcf, leds in second.items():
+        # Turn on the LEDs
+        for led in leds[0]:
+            Gled[pcf][led].value = True
+        for led in leds[1]:
+            Rled[pcf][led].value = True
 
-        if name != 'four':
-            Rled[name][6].value = True
-            Rled[name][7].value = True
+        time.sleep(2)
 
-        if name == 'four':
-            Rled[name][2].value = True
+        for led in leds[0]:
+            Gled[pcf][led].value = False
+        for led in leds[1]:
+            Rled[pcf][led].value = False
 
-    time.sleep(2)
+        time.sleep(0)
 
-    for name in ['one', 'two', 'three', 'four', 'five']:
-        Gled[name][5].value = False
-        Gled[name][4].value = False
 
-        for i in range(8):
-            Rled[name][i].value = False
-
-    time.sleep(0)
-
-    #third pattern
-    # 3,2 green 8,9,10,11,14,15 red
-    
     print('third pattern')
-    
-    for name in ['one', 'two', 'three', 'four', 'five']:
-        Gled[name][3].value = True
-        Gled[name][2].value = True
+    states = {
+        'one': ([4, 0], [0, 1, 2, 4, 5, 6]),
+        'two': ([1, 5], [0, 1, 3, 4, 5, 7]),
+        'three': ([7, 2], [1, 2, 3, 4, 6]),
+        'four': ([2], [0, 1, 2, 3, 4, 6, 7]),
+        'five': ([4, 7, 2], [1, 2, 4, 6, 7])
+    }
 
-    for name in ['one', 'two', 'three', 'four', 'five']:
-        Rled[name][0].value = True
-        Rled[name][1].value = True
-        Rled[name][2].value = True
-        Rled[name][3].value = True
+    for pcf, leds in states.items():
+        for led in leds[0]:
+            Gled[pcf][led].value = True
+        for led in leds[1]:
+            Rled[pcf][led].value = True
 
-        if name != 'four':
-            Rled[name][6].value = True
-            Rled[name][7].value = True
+        time.sleep(2)
 
-        if name == 'four':
-            Rled[name][4].value = True
-            Rled[name][5].value = True
-            Rled[name][7].value = True
+        for led in leds[0]:
+            Gled[pcf][led].value = False
+        for led in leds[1]:
+            Rled[pcf][led].value = False
 
-    time.sleep(2)
+        time.sleep(0)
 
-    for name in ['one', 'two', 'three', 'four', 'five']:
-        Gled[name][3].value = False
-        Gled[name][2].value = False
-
-        for i in range(8):
-            Rled[name][i].value = False
-
-    time.sleep(0)
-
-    #fourth pattern
-    # 0,1 green 8,9,10,11,12,13 red
 
     print('fourth pattern')
-    
-    for name in ['one', 'two', 'three', 'four', 'five']:
-        Gled[name][1].value = True
-        Gled[name][0].value = True
+    fourth = {
+        'one': ([1, 5], [0, 1, 3, 4, 5, 7]),
+        'two': ([7, 3], [1, 2, 3, 5, 6, 7]),
+        'three': ([6], [0, 2, 3, 4, 5, 6]),
+        'four': ([4], [0, 1, 2, 4, 5, 6, 7]),
+        'five': ([1], [0, 1, 2, 3, 4, 5, 7])
+    }
 
-    for name in ['one', 'two', 'three', 'four', 'five']:
-        Rled[name][0].value = True
-        Rled[name][1].value = True
-        Rled[name][2].value = True
-        Rled[name][3].value = True
-        Rled[name][4].value = True
-        Rled[name][5].value = True
+    for pcf, leds in fourth.items():
+        for led in leds[0]:
+            Gled[pcf][led].value = True
+        for led in leds[1]:
+            Rled[pcf][led].value = True
 
-    time.sleep(2)
+        time.sleep(2)
 
-    for name in ['one', 'two', 'three', 'four', 'five']:
-        Gled[name][1].value = False
-        Gled[name][0].value = False
+        for led in leds[0]:
+            Gled[pcf][led].value = False
+        for led in leds[1]:
+            Rled[pcf][led].value = False
 
-        for i in range(6):
-            Rled[name][i].value = False
-
-    time.sleep(0)
+        time.sleep(0)
